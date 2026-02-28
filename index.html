@@ -1,0 +1,200 @@
+<!--
+  Grist E-Learning Widget
+  Copyright 2026 Said Hamadou (isaytoo)
+  Licensed under the Apache License, Version 2.0
+  https://github.com/isaytoo/grist-elearning-widget
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Learning</title>
+  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="course-thumbnail" id="courseThumbnail">
+          <span class="course-icon">🎓</span>
+        </div>
+        <h2 class="course-title" id="courseTitle">Chargement...</h2>
+        <div class="course-meta" id="courseMeta"></div>
+      </div>
+      
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">Progression</span>
+          <span class="progress-value" id="progressValue">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      
+      <nav class="chapters-nav" id="chaptersNav">
+        <!-- Chapters will be rendered here -->
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="btn-certificate" id="btnCertificate" disabled>
+          <span class="icon">🏆</span>
+          <span>Obtenir le certificat</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <button class="btn-toggle-sidebar" id="btnToggleSidebar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="breadcrumb" id="breadcrumb">
+          <span class="breadcrumb-item">Cours</span>
+        </div>
+        <div class="top-bar-actions">
+          <div class="user-info" id="userInfo">
+            <span class="user-avatar">👤</span>
+            <span class="user-name" id="userName"></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Lesson Content -->
+      <div class="lesson-container" id="lessonContainer">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-icon">🎓</div>
+          <h1>Bienvenue dans votre formation</h1>
+          <p>Sélectionnez une leçon dans le menu pour commencer</p>
+        </div>
+
+        <!-- Video Player -->
+        <div class="video-section" id="videoSection" style="display: none;">
+          <div class="video-wrapper">
+            <div class="video-player" id="videoPlayer">
+              <iframe id="videoFrame" allowfullscreen></iframe>
+            </div>
+          </div>
+          <div class="video-controls">
+            <button class="btn-video-action" id="btnMarkWatched">
+              <span class="icon">✓</span> Marquer comme vu
+            </button>
+          </div>
+        </div>
+
+        <!-- Lesson Text Content -->
+        <div class="lesson-content" id="lessonContent" style="display: none;">
+          <div class="lesson-header">
+            <span class="lesson-type-badge" id="lessonTypeBadge">📖 Leçon</span>
+            <h1 class="lesson-title" id="lessonTitle"></h1>
+            <div class="lesson-meta" id="lessonMeta"></div>
+          </div>
+          <div class="lesson-body" id="lessonBody"></div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section" id="quizSection" style="display: none;">
+          <div class="quiz-header">
+            <span class="quiz-badge">📝 Quiz</span>
+            <h2 class="quiz-title" id="quizTitle">Testez vos connaissances</h2>
+            <div class="quiz-progress" id="quizProgress"></div>
+          </div>
+          <div class="quiz-container" id="quizContainer">
+            <!-- Quiz questions will be rendered here -->
+          </div>
+          <div class="quiz-results" id="quizResults" style="display: none;">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <h2 class="results-title" id="resultsTitle">Félicitations !</h2>
+            <p class="results-score" id="resultsScore"></p>
+            <div class="results-actions">
+              <button class="btn btn-secondary" id="btnRetryQuiz">Réessayer</button>
+              <button class="btn btn-primary" id="btnNextLesson">Leçon suivante</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="lesson-navigation" id="lessonNavigation" style="display: none;">
+          <button class="btn btn-nav btn-prev" id="btnPrevLesson">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span>Précédent</span>
+          </button>
+          <button class="btn btn-primary btn-complete" id="btnCompleteLesson">
+            <span>Marquer comme terminé</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+          <button class="btn btn-nav btn-next" id="btnNextLessonNav">
+            <span>Suivant</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Certificate Modal -->
+    <div class="modal" id="certificateModal">
+      <div class="modal-overlay"></div>
+      <div class="modal-content certificate-content">
+        <button class="modal-close" id="closeCertificateModal">&times;</button>
+        <div class="certificate" id="certificate">
+          <div class="certificate-border">
+            <div class="certificate-inner">
+              <div class="certificate-logo">🎓</div>
+              <h1>Certificat de Réussite</h1>
+              <p class="certificate-text">Ce certificat atteste que</p>
+              <h2 class="certificate-name" id="certificateName"></h2>
+              <p class="certificate-text">a complété avec succès la formation</p>
+              <h3 class="certificate-course" id="certificateCourse"></h3>
+              <p class="certificate-date" id="certificateDate"></p>
+              <div class="certificate-signature">
+                <div class="signature-line"></div>
+                <p>Signature</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="certificate-actions">
+          <button class="btn btn-primary" id="btnDownloadCertificate">
+            <span class="icon">📥</span> Télécharger
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <p>Chargement...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <footer style="position: fixed; bottom: 0; left: 0; right: 0; background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 4px 12px; font-size: 0.7em; color: #94a3b8; display: flex; justify-content: space-between; z-index: 1000;">
+    <span>© 2026 Said Hamadou (isaytoo)</span>
+    <a href="https://gristup.fr" target="_blank" style="color: #3b82f6; text-decoration: none;">gristup.fr</a>
+  </footer>
+
+  <script src="widget.js"></script>
+</body>
+</html>
