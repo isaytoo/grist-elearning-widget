@@ -19,6 +19,7 @@ const state = {
   currentLesson: null,
   currentQuizAnswers: {},
   userEmail: null,
+  learnerName: null,
   mappedColumns: {},
   isReady: false,
   lang: 'fr'
@@ -68,7 +69,11 @@ const translations = {
     min: 'min',
     rateLesson: 'Notez cette leçon',
     thankYouRating: 'Merci pour votre note !',
-    yourRating: 'Votre note'
+    yourRating: 'Votre note',
+    welcomeModal: 'Bienvenue !',
+    enterName: 'Entrez votre nom pour personnaliser votre expérience et votre certificat',
+    yourFullName: 'Votre nom complet',
+    startLearning: 'Commencer'
   },
   en: {
     loading: 'Loading...',
@@ -109,7 +114,11 @@ const translations = {
     min: 'min',
     rateLesson: 'Rate this lesson',
     thankYouRating: 'Thank you for your rating!',
-    yourRating: 'Your rating'
+    yourRating: 'Your rating',
+    welcomeModal: 'Welcome!',
+    enterName: 'Enter your name to personalize your experience and certificate',
+    yourFullName: 'Your full name',
+    startLearning: 'Start'
   }
 };
 
@@ -146,8 +155,8 @@ function updateUILanguage() {
   // Update static UI elements
   document.querySelector('.progress-label').textContent = t('progression');
   document.querySelector('#btnCertificate span:last-child').textContent = t('getCertificate');
-  document.querySelector('#welcomeScreen h1').textContent = t('welcomeTitle');
-  document.querySelector('#welcomeScreen p').textContent = t('welcomeText');
+  document.querySelector('#welcomeTitle').textContent = t('welcomeTitle');
+  document.querySelector('#welcomeText').textContent = t('welcomeText');
   document.querySelector('#btnMarkWatched').innerHTML = `<span class="icon">✓</span> ${t('markAsWatched')}`;
   document.querySelector('#btnPrevLesson span').textContent = t('previous');
   document.querySelector('#btnNextLessonNav span').textContent = t('next');
@@ -157,6 +166,12 @@ function updateUILanguage() {
   document.querySelector('.certificate-signature p').textContent = t('signature');
   document.querySelector('#btnDownloadCertificate').innerHTML = `<span class="icon">📥</span> ${t('download')}`;
   document.querySelector('#loadingOverlay p').textContent = t('loading');
+  
+  // Name modal
+  document.querySelector('#nameModalTitle').textContent = t('welcomeModal');
+  document.querySelector('#nameModalText').textContent = t('enterName');
+  document.querySelector('#learnerNameInput').placeholder = t('yourFullName');
+  document.querySelector('#btnStartText').textContent = t('startLearning');
   
   // Re-render dynamic content if course is loaded
   if (state.currentCourse) {
@@ -857,13 +872,60 @@ function initRatingSystem() {
 }
 
 // ============================================================================
+// NAME MODAL
+// ============================================================================
+
+function checkLearnerName() {
+  const savedName = localStorage.getItem('elearning_learner_name');
+  if (savedName) {
+    state.learnerName = savedName;
+    updateUserDisplay();
+    return true;
+  }
+  return false;
+}
+
+function showNameModal() {
+  document.getElementById('nameModal').classList.add('visible');
+  document.getElementById('learnerNameInput').focus();
+}
+
+function hideNameModal() {
+  document.getElementById('nameModal').classList.remove('visible');
+}
+
+function saveLearnerName() {
+  const input = document.getElementById('learnerNameInput');
+  const name = input.value.trim();
+  
+  if (name.length < 2) {
+    input.focus();
+    input.style.borderColor = 'var(--danger)';
+    setTimeout(() => input.style.borderColor = '', 1000);
+    return;
+  }
+  
+  state.learnerName = name;
+  localStorage.setItem('elearning_learner_name', name);
+  updateUserDisplay();
+  hideNameModal();
+}
+
+function updateUserDisplay() {
+  const userName = document.getElementById('userName');
+  if (state.learnerName) {
+    userName.textContent = state.learnerName;
+  }
+}
+
+// ============================================================================
 // CERTIFICATE
 // ============================================================================
 
 function showCertificate() {
   if (getProgressPercentage() < 100) return;
   
-  document.getElementById('certificateName').textContent = state.userEmail || 'Apprenant';
+  document.getElementById('certificateName').textContent = state.learnerName || state.userEmail || 'Apprenant';
   document.getElementById('certificateCourse').textContent = state.currentCourse?.title || 'Formation';
   const dateLocale = state.lang === 'en' ? 'en-US' : 'fr-FR';
   document.getElementById('certificateDate').textContent = `${t('issuedOn')} ${new Date().toLocaleDateString(dateLocale, {
@@ -961,6 +1023,18 @@ function showToast(message, type = 'success') {
 document.addEventListener('DOMContentLoaded', () => {
   // Load language preference
   loadLanguage();
+  
+  // Check if learner name exists, if not show modal
+  if (!checkLearnerName()) {
+    // Show modal after a short delay to let the UI load
+    setTimeout(showNameModal, 500);
+  }
+  
+  // Name modal events
+  document.getElementById('btnStartLearning').addEventListener('click', saveLearnerName);
+  document.getElementById('learnerNameInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') saveLearnerName();
+  });
   
   // Language toggle
   document.querySelectorAll('.lang-option').forEach(opt => {

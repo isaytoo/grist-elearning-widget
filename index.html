@@ -82,8 +82,26 @@
         <!-- Welcome Screen -->
         <div class="welcome-screen" id="welcomeScreen">
           <div class="welcome-icon">🎓</div>
-          <h1>Bienvenue dans votre formation</h1>
-          <p>Sélectionnez une leçon dans le menu pour commencer</p>
+          <h1 id="welcomeTitle">Bienvenue dans votre formation</h1>
+          <p id="welcomeText">Sélectionnez une leçon dans le menu pour commencer</p>
+        </div>
+
+        <!-- Name Input Modal -->
+        <div class="name-modal" id="nameModal">
+          <div class="name-modal-content">
+            <div class="name-modal-icon">👋</div>
+            <h2 id="nameModalTitle">Bienvenue !</h2>
+            <p id="nameModalText">Entrez votre nom pour personnaliser votre expérience et votre certificat</p>
+            <div class="name-input-group">
+              <input type="text" id="learnerNameInput" placeholder="Votre nom complet" autocomplete="name">
+              <button class="btn btn-primary" id="btnStartLearning">
+                <span id="btnStartText">Commencer</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Video Player -->
