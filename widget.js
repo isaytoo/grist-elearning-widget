@@ -942,22 +942,44 @@ function closeCertificate() {
 }
 
 function downloadCertificate() {
-  // Simple print-based download
+  // Safe certificate generation without document.write
   const certificate = document.getElementById('certificate');
   const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Certificat - ${state.currentCourse?.title}</title>
-        <style>
-          body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
-          ${document.querySelector('style')?.textContent || ''}
-        </style>
-      </head>
-      <body>${certificate.outerHTML}</body>
-    </html>
-  `);
-  printWindow.document.close();
+  
+  // Create document elements safely
+  const doc = printWindow.document;
+  const html = doc.createElement('html');
+  const head = doc.createElement('head');
+  const body = doc.createElement('body');
+  
+  // Add title
+  const title = doc.createElement('title');
+  title.textContent = `Certificat - ${state.currentCourse?.title}`;
+  head.appendChild(title);
+  
+  // Add styles safely
+  const style = doc.createElement('style');
+  style.textContent = `
+    body { 
+      margin: 0; 
+      padding: 20px; 
+      font-family: 'Inter', sans-serif; 
+      background: white;
+    }
+    ${document.querySelector('style')?.textContent || ''}
+  `;
+  head.appendChild(style);
+  
+  // Clone certificate safely
+  const certificateClone = certificate.cloneNode(true);
+  body.appendChild(certificateClone);
+  
+  // Append to document
+  html.appendChild(head);
+  html.appendChild(body);
+  doc.appendChild(html);
+  
+  // Print
   printWindow.print();
 }
 
