@@ -1,83 +1,10 @@
 Course_Title,Course_Description,Chapter_Title,Chapter_Order,Lesson_Title,Lesson_Type,Lesson_Content,Lesson_VideoUrl,Lesson_Duration,Lesson_Order,Quiz_Question,Quiz_Options,Quiz_CorrectAnswer
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les bases,1,Bienvenue dans Grist,video,"# Bienvenue !
-
-Dans cette formation, vous allez découvrir **Grist**, un outil puissant de gestion de données.
-
-## Ce que vous allez apprendre :
-- Créer des documents
-- Organiser vos données
-- Utiliser les formules
-- Créer des widgets personnalisés",https://www.youtube.com/watch?v=XYZ123,5,1,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les bases,1,Créer votre premier document,text,"# Créer un document Grist
-
-Pour créer votre premier document :
-
-1. Cliquez sur **+ Nouveau document**
-2. Donnez-lui un nom
-3. Commencez à ajouter des colonnes
-
-> **Astuce** : Vous pouvez importer des fichiers CSV ou Excel directement !
-
-## Types de colonnes disponibles
-- **Texte** : pour les chaînes de caractères
-- **Nombre** : pour les valeurs numériques
-- **Date** : pour les dates
-- **Choix** : pour les listes déroulantes",,8,2,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les bases,1,Quiz - Les bases,quiz,Testez vos connaissances sur les bases de Grist.,,2,3,Comment créer un nouveau document dans Grist ?,Cliquer sur Fichier > Nouveau|Cliquer sur + Nouveau document|Taper Ctrl+N|Envoyer un email,1
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les formules,2,Introduction aux formules,video,"# Les formules dans Grist
-
-Les formules Grist utilisent **Python** !
-
-## Exemples de formules :
-- `$Colonne1 + $Colonne2` - Addition
-- `$Prix * $Quantite` - Multiplication
-- `$Date.year` - Extraire l'année
-
-Les formules sont très puissantes et permettent d'automatiser vos calculs.",https://www.youtube.com/watch?v=ABC456,10,4,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les formules,2,Formules avancées,text,"# Formules avancées
-
-## Lookups et références
-
-Utilisez `Table.lookupOne()` pour chercher des données :
-
-```python
-Products.lookupOne(Name=$ProductName)
-```
-
-## Conditions
-
-```python
-if $Status == 'Actif':
-    return 'En cours'
-else:
-    return 'Terminé'
-```
-
-## Agrégations
-
-```python
-SUM(Orders.lookupRecords(Client=$id).Amount)
-```",,12,5,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les formules,2,Quiz - Formules,quiz,Testez vos connaissances sur les formules Grist.,,3,6,Quel langage utilise Grist pour les formules ?,JavaScript|Python|SQL|Excel,1
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les widgets,3,Widgets personnalisés,video,"# Les widgets personnalisés
-
-Grist permet d'ajouter des **widgets personnalisés** pour étendre ses fonctionnalités.
-
-## Types de widgets :
-- Visualisation de données
-- Formulaires avancés
-- Intégrations externes
-
-Visitez **gristup.fr** pour découvrir des widgets gratuits !",https://www.youtube.com/watch?v=DEF789,7,7,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les widgets,3,Installer un widget,text,"# Installer un widget personnalisé
-
-1. Ajoutez une nouvelle page
-2. Choisissez **Widget personnalisé**
-3. Collez l'URL du widget
-4. Configurez le mapping des colonnes
-
-## Niveaux d'accès
-- **Aucun** : le widget ne peut pas lire les données
-- **Lecture seule** : le widget peut lire mais pas modifier
-- **Accès complet** : le widget peut lire et modifier",,5,8,,,
-Introduction à Grist,Apprenez les bases de Grist en quelques leçons interactives,Les widgets,3,Quiz final,quiz,Testez vos connaissances sur les widgets Grist.,,3,9,Où trouver des widgets Grist gratuits ?,github.com|gristup.fr|google.com|stackoverflow.com,1
+Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Bienvenue dans Grist,video,Bienvenue dans cette formation Grist,https://www.youtube.com/watch?v=XYZ123,5,1,,,
+Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Creer votre premier document,text,Pour creer votre premier document cliquez sur Nouveau document,,8,2,,,
+Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Quiz Les bases,quiz,Testez vos connaissances,,2,3,Comment creer un nouveau document ?,Fichier Nouveau|Nouveau document|Ctrl N|Email,1
+Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Introduction aux formules,video,Les formules Grist utilisent Python,https://www.youtube.com/watch?v=ABC456,10,4,,,
+Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Formules avancees,text,Utilisez Table.lookupOne pour chercher des donnees,,12,5,,,
+Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Quiz Formules,quiz,Testez vos connaissances sur les formules,,3,6,Quel langage utilise Grist ?,JavaScript|Python|SQL|Excel,1
+Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Widgets personnalises,video,Grist permet d ajouter des widgets personnalises,https://www.youtube.com/watch?v=DEF789,7,7,,,
+Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Installer un widget,text,Ajoutez une nouvelle page et choisissez Widget personnalise,,5,8,,,
+Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Quiz final,quiz,Testez vos connaissances sur les widgets,,3,9,Ou trouver des widgets Grist gratuits ?,github.com|gristup.fr|google.com|stackoverflow.com,1
