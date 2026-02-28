@@ -1,0 +1,11 @@
+{"records":[
+{"id":1,"fields":{"Chapter_Order":1,"Lesson_Type":"video","Lesson_Content":"Bienvenue dans cette formation Grist","Lesson_VideoUrl":"https://www.youtube.com/watch?v=XYZ123","Lesson_Duration":5,"Lesson_Order":1}},
+{"id":2,"fields":{"Chapter_Order":1,"Lesson_Type":"text","Lesson_Content":"Pour creer votre premier document cliquez sur Nouveau document","Lesson_Duration":8,"Lesson_Order":2}},
+{"id":3,"fields":{"Chapter_Order":1,"Lesson_Type":"quiz","Lesson_Content":"Testez vos connaissances","Lesson_Duration":2,"Lesson_Order":3,"Quiz_Question":"Comment creer un nouveau document","Quiz_Options":"Fichier Nouveau|Nouveau document|Ctrl N|Email","Quiz_CorrectAnswer":1}},
+{"id":4,"fields":{"Chapter_Order":2,"Lesson_Type":"video","Lesson_Content":"Les formules Grist utilisent Python","Lesson_VideoUrl":"https://www.youtube.com/watch?v=ABC456","Lesson_Duration":10,"Lesson_Order":4}},
+{"id":5,"fields":{"Chapter_Order":2,"Lesson_Type":"text","Lesson_Content":"Utilisez Table.lookupOne pour chercher des donnees","Lesson_Duration":12,"Lesson_Order":5}},
+{"id":6,"fields":{"Chapter_Order":2,"Lesson_Type":"quiz","Lesson_Content":"Testez vos connaissances sur les formules","Lesson_Duration":3,"Lesson_Order":6,"Quiz_Question":"Quel langage utilise Grist","Quiz_Options":"JavaScript|Python|SQL|Excel","Quiz_CorrectAnswer":1}},
+{"id":7,"fields":{"Chapter_Order":3,"Lesson_Type":"video","Lesson_Content":"Grist permet d ajouter des widgets personnalises","Lesson_VideoUrl":"https://www.youtube.com/watch?v=DEF789","Lesson_Duration":7,"Lesson_Order":7}},
+{"id":8,"fields":{"Chapter_Order":3,"Lesson_Type":"text","Lesson_Content":"Ajoutez une nouvelle page et choisissez Widget personnalise","Lesson_Duration":5,"Lesson_Order":8}},
+{"id":9,"fields":{"Chapter_Order":3,"Lesson_Type":"quiz","Lesson_Content":"Testez vos connaissances sur les widgets","Lesson_Duration":3,"Lesson_Order":9,"Quiz_Question":"Ou trouver des widgets Grist gratuits","Quiz_Options":"github.com|gristup.fr|google.com|stackoverflow.com","Quiz_CorrectAnswer":1}}
+]}

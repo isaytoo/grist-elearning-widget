@@ -377,6 +377,27 @@ body {
   gap: 16px;
 }
 
+.lang-selector {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.85em;
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition);
+}
+
+.lang-selector:hover {
+  border-color: var(--primary);
+}
+
+.lang-selector:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
 .user-info {
   display: flex;
   align-items: center;
