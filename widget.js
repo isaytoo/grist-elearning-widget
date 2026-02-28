@@ -174,20 +174,20 @@ function updateUILanguage() {
 grist.ready({
   requiredAccess: 'full',
   columns: [
-    { name: 'Course_Title', title: 'Titre du cours', type: 'Text' },
-    { name: 'Course_Description', title: 'Description du cours', type: 'Text', optional: true },
-    { name: 'Course_Thumbnail', title: 'Image du cours', type: 'Text', optional: true },
-    { name: 'Chapter_Title', title: 'Titre du chapitre', type: 'Text', optional: true },
-    { name: 'Chapter_Order', title: 'Ordre du chapitre', type: 'Int', optional: true },
-    { name: 'Lesson_Title', title: 'Titre de la leçon', type: 'Text', optional: true },
+    { name: 'Course_Title', title: 'Titre du cours', type: 'Any' },
+    { name: 'Course_Description', title: 'Description du cours', type: 'Any', optional: true },
+    { name: 'Course_Thumbnail', title: 'Image du cours', type: 'Any', optional: true },
+    { name: 'Chapter_Title', title: 'Titre du chapitre', type: 'Any', optional: true },
+    { name: 'Chapter_Order', title: 'Ordre du chapitre', type: 'Any', optional: true },
+    { name: 'Lesson_Title', title: 'Titre de la leçon', type: 'Any', optional: true },
     { name: 'Lesson_Type', title: 'Type de leçon', type: 'Any', optional: true },
-    { name: 'Lesson_Content', title: 'Contenu de la leçon', type: 'Text', optional: true },
-    { name: 'Lesson_VideoUrl', title: 'URL de la vidéo', type: 'Text', optional: true },
-    { name: 'Lesson_Duration', title: 'Durée (min)', type: 'Int', optional: true },
-    { name: 'Lesson_Order', title: 'Ordre de la leçon', type: 'Int', optional: true },
-    { name: 'Quiz_Question', title: 'Question du quiz', type: 'Text', optional: true },
-    { name: 'Quiz_Options', title: 'Options (séparées par |)', type: 'Text', optional: true },
-    { name: 'Quiz_CorrectAnswer', title: 'Réponse correcte', type: 'Int', optional: true }
+    { name: 'Lesson_Content', title: 'Contenu de la leçon', type: 'Any', optional: true },
+    { name: 'Lesson_VideoUrl', title: 'URL de la vidéo', type: 'Any', optional: true },
+    { name: 'Lesson_Duration', title: 'Durée (min)', type: 'Any', optional: true },
+    { name: 'Lesson_Order', title: 'Ordre de la leçon', type: 'Any', optional: true },
+    { name: 'Quiz_Question', title: 'Question du quiz', type: 'Any', optional: true },
+    { name: 'Quiz_Options', title: 'Options (séparées par |)', type: 'Any', optional: true },
+    { name: 'Quiz_CorrectAnswer', title: 'Réponse correcte', type: 'Any', optional: true }
   ]
 });
 
