@@ -1026,13 +1026,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Check if learner name exists, if not show modal
   const hasName = checkLearnerName();
-  console.log('Learner name check:', hasName, state.learnerName);
   if (hasName) {
-    // Force update display
     document.getElementById('userName').textContent = state.learnerName;
-    console.log('Set userName to:', state.learnerName);
   } else {
-    // Show modal after a short delay to let the UI load
     setTimeout(showNameModal, 800);
   }
   
