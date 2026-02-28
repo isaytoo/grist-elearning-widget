@@ -877,13 +877,11 @@ function initRatingSystem() {
 
 function checkLearnerName() {
   const savedName = localStorage.getItem('elearning_learner_name');
-  if (savedName) {
+  if (savedName && savedName.trim().length > 0) {
     state.learnerName = savedName;
     updateUserDisplay();
-    document.getElementById('userInfo').style.display = 'flex';
     return true;
   }
-  document.getElementById('userInfo').style.display = 'none';
   return false;
 }
 
@@ -915,10 +913,8 @@ function saveLearnerName() {
 
 function updateUserDisplay() {
   const userName = document.getElementById('userName');
-  const userInfo = document.getElementById('userInfo');
   if (state.learnerName) {
     userName.textContent = state.learnerName;
-    userInfo.style.display = 'flex';
   }
 }
 
@@ -1029,9 +1025,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadLanguage();
   
   // Check if learner name exists, if not show modal
-  if (!checkLearnerName()) {
+  const hasName = checkLearnerName();
+  console.log('Learner name check:', hasName, state.learnerName);
+  if (!hasName) {
     // Show modal after a short delay to let the UI load
-    setTimeout(showNameModal, 500);
+    setTimeout(showNameModal, 800);
   }
   
   // Name modal events
