@@ -1,10 +1,10 @@
-Course_Title,Course_Description,Chapter_Title,Chapter_Order,Lesson_Title,Lesson_Type,Lesson_Content,Lesson_VideoUrl,Lesson_Duration,Lesson_Order,Quiz_Question,Quiz_Options,Quiz_CorrectAnswer
-Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Bienvenue dans Grist,video,Bienvenue dans cette formation Grist,https://www.youtube.com/watch?v=XYZ123,5,1,,,
-Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Creer votre premier document,text,Pour creer votre premier document cliquez sur Nouveau document,,8,2,,,
-Introduction a Grist,Apprenez les bases de Grist,Les bases,1,Quiz Les bases,quiz,Testez vos connaissances,,2,3,Comment creer un nouveau document ?,Fichier Nouveau|Nouveau document|Ctrl N|Email,1
-Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Introduction aux formules,video,Les formules Grist utilisent Python,https://www.youtube.com/watch?v=ABC456,10,4,,,
-Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Formules avancees,text,Utilisez Table.lookupOne pour chercher des donnees,,12,5,,,
-Introduction a Grist,Apprenez les bases de Grist,Les formules,2,Quiz Formules,quiz,Testez vos connaissances sur les formules,,3,6,Quel langage utilise Grist ?,JavaScript|Python|SQL|Excel,1
-Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Widgets personnalises,video,Grist permet d ajouter des widgets personnalises,https://www.youtube.com/watch?v=DEF789,7,7,,,
-Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Installer un widget,text,Ajoutez une nouvelle page et choisissez Widget personnalise,,5,8,,,
-Introduction a Grist,Apprenez les bases de Grist,Les widgets,3,Quiz final,quiz,Testez vos connaissances sur les widgets,,3,9,Ou trouver des widgets Grist gratuits ?,github.com|gristup.fr|google.com|stackoverflow.com,1
+Course_Title;Course_Description;Chapter_Title;Chapter_Order;Lesson_Title;Lesson_Type;Lesson_Content;Lesson_VideoUrl;Lesson_Duration;Lesson_Order;Quiz_Question;Quiz_Options;Quiz_CorrectAnswer
+Introduction a Grist;Apprenez les bases de Grist;Les bases;1;Bienvenue dans Grist;video;Bienvenue dans cette formation Grist;https://www.youtube.com/watch?v=XYZ123;5;1;;;
+Introduction a Grist;Apprenez les bases de Grist;Les bases;1;Creer votre premier document;text;Pour creer votre premier document cliquez sur Nouveau document;;8;2;;;
+Introduction a Grist;Apprenez les bases de Grist;Les bases;1;Quiz Les bases;quiz;Testez vos connaissances;;2;3;Comment creer un nouveau document;Fichier Nouveau|Nouveau document|Ctrl N|Email;1
+Introduction a Grist;Apprenez les bases de Grist;Les formules;2;Introduction aux formules;video;Les formules Grist utilisent Python;https://www.youtube.com/watch?v=ABC456;10;4;;;
+Introduction a Grist;Apprenez les bases de Grist;Les formules;2;Formules avancees;text;Utilisez Table.lookupOne pour chercher des donnees;;12;5;;;
+Introduction a Grist;Apprenez les bases de Grist;Les formules;2;Quiz Formules;quiz;Testez vos connaissances sur les formules;;3;6;Quel langage utilise Grist;JavaScript|Python|SQL|Excel;1
+Introduction a Grist;Apprenez les bases de Grist;Les widgets;3;Widgets personnalises;video;Grist permet d ajouter des widgets personnalises;https://www.youtube.com/watch?v=DEF789;7;7;;;
+Introduction a Grist;Apprenez les bases de Grist;Les widgets;3;Installer un widget;text;Ajoutez une nouvelle page et choisissez Widget personnalise;;5;8;;;
+Introduction a Grist;Apprenez les bases de Grist;Les widgets;3;Quiz final;quiz;Testez vos connaissances sur les widgets;;3;9;Ou trouver des widgets Grist gratuits;github.com|gristup.fr|google.com|stackoverflow.com;1
