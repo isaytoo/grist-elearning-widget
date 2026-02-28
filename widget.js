@@ -20,8 +20,138 @@ const state = {
   currentQuizAnswers: {},
   userEmail: null,
   mappedColumns: {},
-  isReady: false
+  isReady: false,
+  lang: 'fr'
 };
+
+// ============================================================================
+// TRANSLATIONS
+// ============================================================================
+
+const translations = {
+  fr: {
+    loading: 'Chargement...',
+    progression: 'Progression',
+    getCertificate: 'Obtenir le certificat',
+    course: 'Cours',
+    lessons: 'leçons',
+    welcomeTitle: 'Bienvenue dans votre formation',
+    welcomeText: 'Sélectionnez une leçon dans le menu pour commencer',
+    markAsWatched: 'Marquer comme vu',
+    lesson: 'Leçon',
+    video: 'Vidéo',
+    quiz: 'Quiz',
+    exercise: 'Exercice',
+    noContent: 'Aucun contenu disponible.',
+    completed: 'Terminé',
+    testKnowledge: 'Testez vos connaissances',
+    question: 'question',
+    validateAnswer: 'Valider ma réponse',
+    congratulations: 'Félicitations !',
+    notQuite: 'Pas tout à fait...',
+    correctAnswer: 'Vous avez répondu correctement !',
+    theCorrectAnswer: 'La bonne réponse était :',
+    retry: 'Réessayer',
+    nextLesson: 'Leçon suivante',
+    previous: 'Précédent',
+    next: 'Suivant',
+    markAsCompleted: 'Marquer comme terminé',
+    lessonCompleted: '✅ Leçon marquée comme terminée !',
+    videoWatched: '✅ Vidéo marquée comme vue !',
+    courseCompleted: '🎉 Félicitations ! Vous avez terminé le cours !',
+    certificateTitle: 'Certificat de Réussite',
+    certificateText1: 'Ce certificat atteste que',
+    certificateText2: 'a complété avec succès la formation',
+    issuedOn: 'Délivré le',
+    signature: 'Signature',
+    download: 'Télécharger',
+    min: 'min'
+  },
+  en: {
+    loading: 'Loading...',
+    progression: 'Progress',
+    getCertificate: 'Get certificate',
+    course: 'Course',
+    lessons: 'lessons',
+    welcomeTitle: 'Welcome to your training',
+    welcomeText: 'Select a lesson from the menu to start',
+    markAsWatched: 'Mark as watched',
+    lesson: 'Lesson',
+    video: 'Video',
+    quiz: 'Quiz',
+    exercise: 'Exercise',
+    noContent: 'No content available.',
+    completed: 'Completed',
+    testKnowledge: 'Test your knowledge',
+    question: 'question',
+    validateAnswer: 'Submit answer',
+    congratulations: 'Congratulations!',
+    notQuite: 'Not quite...',
+    correctAnswer: 'You answered correctly!',
+    theCorrectAnswer: 'The correct answer was:',
+    retry: 'Retry',
+    nextLesson: 'Next lesson',
+    previous: 'Previous',
+    next: 'Next',
+    markAsCompleted: 'Mark as completed',
+    lessonCompleted: '✅ Lesson marked as completed!',
+    videoWatched: '✅ Video marked as watched!',
+    courseCompleted: '🎉 Congratulations! You have completed the course!',
+    certificateTitle: 'Certificate of Completion',
+    certificateText1: 'This certifies that',
+    certificateText2: 'has successfully completed the training',
+    issuedOn: 'Issued on',
+    signature: 'Signature',
+    download: 'Download',
+    min: 'min'
+  }
+};
+
+function t(key) {
+  return translations[state.lang]?.[key] || translations.fr[key] || key;
+}
+
+function setLanguage(lang) {
+  state.lang = lang;
+  localStorage.setItem('elearning_lang', lang);
+  updateUILanguage();
+}
+
+function loadLanguage() {
+  const saved = localStorage.getItem('elearning_lang');
+  if (saved && (saved === 'fr' || saved === 'en')) {
+    state.lang = saved;
+  } else {
+    const browserLang = navigator.language?.substring(0, 2);
+    state.lang = browserLang === 'en' ? 'en' : 'fr';
+  }
+  document.getElementById('langSelector').value = state.lang;
+}
+
+function updateUILanguage() {
+  // Update static UI elements
+  document.querySelector('.progress-label').textContent = t('progression');
+  document.querySelector('#btnCertificate span:last-child').textContent = t('getCertificate');
+  document.querySelector('#welcomeScreen h1').textContent = t('welcomeTitle');
+  document.querySelector('#welcomeScreen p').textContent = t('welcomeText');
+  document.querySelector('#btnMarkWatched').innerHTML = `<span class="icon">✓</span> ${t('markAsWatched')}`;
+  document.querySelector('#btnPrevLesson span').textContent = t('previous');
+  document.querySelector('#btnNextLessonNav span').textContent = t('next');
+  document.querySelector('#certificateModal h1').textContent = t('certificateTitle');
+  document.querySelector('#certificateModal .certificate-text').textContent = t('certificateText1');
+  document.querySelectorAll('#certificateModal .certificate-text')[1].textContent = t('certificateText2');
+  document.querySelector('.certificate-signature p').textContent = t('signature');
+  document.querySelector('#btnDownloadCertificate').innerHTML = `<span class="icon">📥</span> ${t('download')}`;
+  document.querySelector('#loadingOverlay p').textContent = t('loading');
+  
+  // Re-render dynamic content if course is loaded
+  if (state.currentCourse) {
+    renderCourse();
+  }
+  if (state.currentLesson) {
+    loadLesson(state.currentLesson);
+  }
+}
 
 // ============================================================================
 // INITIALIZATION
@@ -240,7 +370,7 @@ function checkCourseCompletion() {
   const btnCertificate = document.getElementById('btnCertificate');
   if (percentage === 100) {
     btnCertificate.disabled = false;
-    showToast('🎉 Félicitations ! Vous avez terminé le cours !', 'success');
+    showToast(t('courseCompleted'), 'success');
   }
 }
 
@@ -253,7 +383,7 @@ function renderCourse() {
   
   // Update header
   document.getElementById('courseTitle').textContent = state.currentCourse.title;
-  document.getElementById('courseMeta').textContent = `${state.lessons.length} leçons`;
+  document.getElementById('courseMeta').textContent = `${state.lessons.length} ${t('lessons')}`;
   
   // Update progress
   updateProgressDisplay();
@@ -440,7 +570,7 @@ function renderLessonContent(lesson) {
   
   const meta = [];
   if (lesson.duration) meta.push(`<span>⏱️ ${lesson.duration} min</span>`);
-  if (isLessonCompleted(lesson.id)) meta.push(`<span>✅ Terminé</span>`);
+  if (isLessonCompleted(lesson.id)) meta.push(`<span>✅ ${t('completed')}</span>`);
   document.getElementById('lessonMeta').innerHTML = meta.join('');
   
   // Parse markdown-like content
@@ -449,16 +579,16 @@ function renderLessonContent(lesson) {
 
 function getLessonTypeLabel(type) {
   const labels = {
-    video: 'Vidéo',
-    text: 'Leçon',
-    quiz: 'Quiz',
-    exercise: 'Exercice'
+    video: t('video'),
+    text: t('lesson'),
+    quiz: t('quiz'),
+    exercise: t('exercise')
   };
-  return labels[type] || 'Leçon';
+  return labels[type] || t('lesson');
 }
 
 function parseContent(content) {
-  if (!content) return '<p>Aucun contenu disponible.</p>';
+  if (!content) return `<p>${t('noContent')}</p>`;
   
   // Simple markdown parsing
   let html = content
@@ -505,8 +635,8 @@ function renderQuiz(lesson) {
   container.style.display = 'block';
   results.style.display = 'none';
   
-  document.getElementById('quizTitle').textContent = 'Testez vos connaissances';
-  document.getElementById('quizProgress').textContent = '1 question';
+  document.getElementById('quizTitle').textContent = t('testKnowledge');
+  document.getElementById('quizProgress').textContent = `1 ${t('question')}`;
   
   const quiz = lesson.quiz;
   
@@ -524,7 +654,7 @@ function renderQuiz(lesson) {
       </div>
     </div>
     <div class="quiz-actions">
-      <button class="btn btn-primary" id="btnSubmitQuiz">Valider ma réponse</button>
+      <button class="btn btn-primary" id="btnSubmitQuiz">${t('validateAnswer')}</button>
     </div>
   `;
   
@@ -575,10 +705,10 @@ function submitQuiz() {
     const score = isCorrect ? 100 : 0;
     
     document.getElementById('resultsIcon').textContent = isCorrect ? '🎉' : '😔';
-    document.getElementById('resultsTitle').textContent = isCorrect ? 'Félicitations !' : 'Pas tout à fait...';
+    document.getElementById('resultsTitle').textContent = isCorrect ? t('congratulations') : t('notQuite');
     document.getElementById('resultsScore').textContent = isCorrect 
-      ? 'Vous avez répondu correctement !' 
-      : `La bonne réponse était : ${lesson.quiz.options[correctAnswer]}`;
+      ? t('correctAnswer') 
+      : `${t('theCorrectAnswer')} ${lesson.quiz.options[correctAnswer]}`;
     
     if (isCorrect) {
       markLessonCompleted(lesson.id, score);
@@ -602,8 +732,8 @@ function updateNavigationButtons() {
   
   const isCompleted = isLessonCompleted(state.currentLesson?.id);
   btnComplete.innerHTML = isCompleted 
-    ? '<span>✓ Terminé</span>' 
-    : '<span>Marquer comme terminé</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    ? `<span>✓ ${t('completed')}</span>` 
+    : `<span>${t('markAsCompleted')}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
   btnComplete.classList.toggle('btn-secondary', isCompleted);
   btnComplete.classList.toggle('btn-primary', !isCompleted);
 }
@@ -626,7 +756,7 @@ function completeCurrentLesson() {
   if (state.currentLesson) {
     markLessonCompleted(state.currentLesson.id);
     updateNavigationButtons();
-    showToast('✅ Leçon marquée comme terminée !', 'success');
+    showToast(t('lessonCompleted'), 'success');
   }
 }
 
@@ -639,7 +769,8 @@ function showCertificate() {
   
   document.getElementById('certificateName').textContent = state.userEmail || 'Apprenant';
   document.getElementById('certificateCourse').textContent = state.currentCourse?.title || 'Formation';
-  document.getElementById('certificateDate').textContent = `Délivré le ${new Date().toLocaleDateString('fr-FR', {
+  const dateLocale = state.lang === 'en' ? 'en-US' : 'fr-FR';
+  document.getElementById('certificateDate').textContent = `${t('issuedOn')} ${new Date().toLocaleDateString(dateLocale, {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -732,6 +863,14 @@ function showToast(message, type = 'success') {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Load language preference
+  loadLanguage();
+  
+  // Language selector
+  document.getElementById('langSelector').addEventListener('change', (e) => {
+    setLanguage(e.target.value);
+  });
+  
   // Sidebar toggle
   document.getElementById('btnToggleSidebar').addEventListener('click', toggleSidebar);
   
@@ -748,7 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnMarkWatched').addEventListener('click', () => {
     if (state.currentLesson) {
       markLessonCompleted(state.currentLesson.id);
-      showToast('✅ Vidéo marquée comme vue !', 'success');
+      showToast(t('videoWatched'), 'success');
     }
   });
   
