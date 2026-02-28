@@ -65,7 +65,10 @@ const translations = {
     issuedOn: 'Délivré le',
     signature: 'Signature',
     download: 'Télécharger',
-    min: 'min'
+    min: 'min',
+    rateLesson: 'Notez cette leçon',
+    thankYouRating: 'Merci pour votre note !',
+    yourRating: 'Votre note'
   },
   en: {
     loading: 'Loading...',
@@ -103,7 +106,10 @@ const translations = {
     issuedOn: 'Issued on',
     signature: 'Signature',
     download: 'Download',
-    min: 'min'
+    min: 'min',
+    rateLesson: 'Rate this lesson',
+    thankYouRating: 'Thank you for your rating!',
+    yourRating: 'Your rating'
   }
 };
 
@@ -125,7 +131,15 @@ function loadLanguage() {
     const browserLang = navigator.language?.substring(0, 2);
     state.lang = browserLang === 'en' ? 'en' : 'fr';
   }
-  document.getElementById('langSelector').value = state.lang;
+  updateLangToggle();
+}
+
+function updateLangToggle() {
+  const toggle = document.getElementById('langToggle');
+  toggle.setAttribute('data-lang', state.lang);
+  toggle.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === state.lang);
+  });
 }
 
 function updateUILanguage() {
@@ -536,6 +550,9 @@ async function loadLesson(lesson) {
   lessonNavigation.style.display = 'flex';
   updateNavigationButtons();
   
+  // Rating section
+  showRatingSection(lesson);
+  
   // Update sidebar
   renderChaptersNav();
   
@@ -761,6 +778,85 @@ function completeCurrentLesson() {
 }
 
 // ============================================================================
+// RATING SYSTEM
+// ============================================================================
+
+function showRatingSection(lesson) {
+  const ratingSection = document.getElementById('ratingSection');
+  const ratingLabel = document.getElementById('ratingLabel');
+  const ratingFeedback = document.getElementById('ratingFeedback');
+  
+  ratingSection.style.display = 'flex';
+  ratingLabel.textContent = t('rateLesson');
+  ratingFeedback.textContent = '';
+  
+  // Check if already rated
+  const existingRating = getLessonRating(lesson.id);
+  updateStarDisplay(existingRating);
+  
+  if (existingRating > 0) {
+    ratingFeedback.textContent = `${t('yourRating')}: ${existingRating}/5`;
+  }
+}
+
+function getLessonRating(lessonId) {
+  const progress = state.progress.find(p => p.lessonId === lessonId);
+  return progress?.rating || 0;
+}
+
+function setLessonRating(lessonId, rating) {
+  const existing = state.progress.find(p => p.lessonId === lessonId);
+  if (existing) {
+    existing.rating = rating;
+  } else {
+    state.progress.push({
+      lessonId: lessonId,
+      completed: false,
+      rating: rating
+    });
+  }
+  saveProgress();
+  
+  document.getElementById('ratingFeedback').textContent = t('thankYouRating');
+  setTimeout(() => {
+    document.getElementById('ratingFeedback').textContent = `${t('yourRating')}: ${rating}/5`;
+  }, 1500);
+}
+
+function updateStarDisplay(rating) {
+  const stars = document.querySelectorAll('#starRating .star');
+  stars.forEach((star, index) => {
+    star.classList.toggle('active', index < rating);
+  });
+}
+
+function initRatingSystem() {
+  const starRating = document.getElementById('starRating');
+  const stars = starRating.querySelectorAll('.star');
+  
+  stars.forEach(star => {
+    star.addEventListener('mouseenter', () => {
+      const rating = parseInt(star.dataset.rating);
+      stars.forEach((s, index) => {
+        s.classList.toggle('hover', index < rating);
+      });
+    });
+    
+    star.addEventListener('mouseleave', () => {
+      stars.forEach(s => s.classList.remove('hover'));
+    });
+    
+    star.addEventListener('click', () => {
+      const rating = parseInt(star.dataset.rating);
+      if (state.currentLesson) {
+        setLessonRating(state.currentLesson.id, rating);
+        updateStarDisplay(rating);
+      }
+    });
+  });
+}
+
+// ============================================================================
 // CERTIFICATE
 // ============================================================================
 
@@ -866,13 +962,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load language preference
   loadLanguage();
   
-  // Language selector
-  document.getElementById('langSelector').addEventListener('change', (e) => {
-    setLanguage(e.target.value);
+  // Language toggle
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      setLanguage(opt.dataset.lang);
+      updateLangToggle();
+    });
   });
   
   // Sidebar toggle
   document.getElementById('btnToggleSidebar').addEventListener('click', toggleSidebar);
+  
+  // Rating system
+  initRatingSystem();
   
   // Navigation
   document.getElementById('btnPrevLesson').addEventListener('click', navigatePrev);

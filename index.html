@@ -65,10 +65,11 @@
           <span class="breadcrumb-item">Cours</span>
         </div>
         <div class="top-bar-actions">
-          <select id="langSelector" class="lang-selector">
-            <option value="fr">🇫🇷 FR</option>
-            <option value="en">🇬🇧 EN</option>
-          </select>
+          <div class="lang-toggle" id="langToggle">
+            <span class="lang-option" data-lang="fr">FR</span>
+            <span class="lang-option" data-lang="en">EN</span>
+            <div class="lang-slider"></div>
+          </div>
           <div class="user-info" id="userInfo">
             <span class="user-avatar">👤</span>
             <span class="user-name" id="userName"></span>
@@ -127,6 +128,21 @@
               <button class="btn btn-secondary" id="btnRetryQuiz">Réessayer</button>
               <button class="btn btn-primary" id="btnNextLesson">Leçon suivante</button>
             </div>
+          </div>
+        </div>
+
+        <!-- Rating Section -->
+        <div class="rating-section" id="ratingSection" style="display: none;">
+          <div class="rating-container">
+            <span class="rating-label" id="ratingLabel">Notez cette leçon</span>
+            <div class="star-rating" id="starRating">
+              <span class="star" data-rating="1">★</span>
+              <span class="star" data-rating="2">★</span>
+              <span class="star" data-rating="3">★</span>
+              <span class="star" data-rating="4">★</span>
+              <span class="star" data-rating="5">★</span>
+            </div>
+            <span class="rating-feedback" id="ratingFeedback"></span>
           </div>
         </div>
 
