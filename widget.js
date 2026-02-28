@@ -166,7 +166,7 @@ grist.ready({
     { name: 'Chapter_Title', title: 'Titre du chapitre', type: 'Text', optional: true },
     { name: 'Chapter_Order', title: 'Ordre du chapitre', type: 'Int', optional: true },
     { name: 'Lesson_Title', title: 'Titre de la leçon', type: 'Text', optional: true },
-    { name: 'Lesson_Type', title: 'Type de leçon', type: 'Choice', optional: true },
+    { name: 'Lesson_Type', title: 'Type de leçon', type: 'Any', optional: true },
     { name: 'Lesson_Content', title: 'Contenu de la leçon', type: 'Text', optional: true },
     { name: 'Lesson_VideoUrl', title: 'URL de la vidéo', type: 'Text', optional: true },
     { name: 'Lesson_Duration', title: 'Durée (min)', type: 'Int', optional: true },
