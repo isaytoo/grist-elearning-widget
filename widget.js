@@ -880,8 +880,10 @@ function checkLearnerName() {
   if (savedName) {
     state.learnerName = savedName;
     updateUserDisplay();
+    document.getElementById('userInfo').style.display = 'flex';
     return true;
   }
+  document.getElementById('userInfo').style.display = 'none';
   return false;
 }
 
@@ -913,8 +915,10 @@ function saveLearnerName() {
 
 function updateUserDisplay() {
   const userName = document.getElementById('userName');
+  const userInfo = document.getElementById('userInfo');
   if (state.learnerName) {
     userName.textContent = state.learnerName;
+    userInfo.style.display = 'flex';
   }
 }
 
