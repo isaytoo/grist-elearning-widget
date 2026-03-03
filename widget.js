@@ -208,14 +208,38 @@ function updateUILanguage() {
     console.log('Widget initialized successfully!');
   } catch (error) {
     console.error('FATAL ERROR during widget initialization:', error);
-    document.getElementById('lessonContent').style.display = 'block';
-    document.getElementById('lessonContent').innerHTML = `
-      <div style="padding: 20px; text-align: center;">
-        <div style="font-size:64px;margin-bottom:20px;">❌</div>
-        <h2>Erreur de chargement</h2>
-        <p>${error.message}</p>
-      </div>
-    `;
+    const content = document.getElementById('lessonContent');
+    content.style.display = 'block';
+    
+    // Check if it's an access error
+    if (error.message && error.message.includes('Access not granted')) {
+      content.innerHTML = `
+        <div style="padding: 40px; text-align: center;">
+          <div style="font-size:64px;margin-bottom:20px;">🔐</div>
+          <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Accès requis' : 'Access required'}</h2>
+          <p style="margin-bottom:24px;color:var(--text-secondary);">
+            ${state.lang === 'fr' 
+              ? 'Ce widget nécessite un accès complet au document pour fonctionner.' 
+              : 'This widget requires full document access to work.'}
+          </p>
+          <div style="text-align:left;max-width:400px;margin:0 auto;padding:20px;background:var(--bg-secondary);border-radius:8px;">
+            <p style="font-weight:600;margin-bottom:12px;">${state.lang === 'fr' ? 'Pour accorder l\'accès :' : 'To grant access:'}</p>
+            <ol style="margin:0;padding-left:20px;line-height:1.8;">
+              <li>${state.lang === 'fr' ? 'Ouvrez le panneau de droite' : 'Open the right panel'}</li>
+              <li>${state.lang === 'fr' ? 'Dans "Niveau d\'accès", sélectionnez "Accès complet au document"' : 'In "Access level", select "Full document access"'}</li>
+            </ol>
+          </div>
+        </div>
+      `;
+    } else {
+      content.innerHTML = `
+        <div style="padding: 20px; text-align: center;">
+          <div style="font-size:64px;margin-bottom:20px;">❌</div>
+          <h2>Erreur de chargement</h2>
+          <p>${error.message}</p>
+        </div>
+      `;
+    }
     hideLoading();
   }
 })();
