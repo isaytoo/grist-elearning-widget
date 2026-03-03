@@ -286,7 +286,9 @@ async function ensureElearningTableExists() {
     }
     
     // Table doesn't exist or is empty - show setup UI
+    console.log('Calling showSetupUI with needsTableCreation:', !tables.includes('Elearning'));
     showSetupUI(!tables.includes('Elearning'));
+    console.log('showSetupUI completed, returning true');
     return true;
     
   } catch (e) {
