@@ -288,7 +288,7 @@ async function createDemoData() {
       // Chapter 1: Les bases
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les bases',
         Chapter_Order: 1,
         Lesson_Title: 'Bienvenue dans Grist',
@@ -303,7 +303,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les bases',
         Chapter_Order: 1,
         Lesson_Title: 'Créer votre premier document',
@@ -318,7 +318,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les bases',
         Chapter_Order: 1,
         Lesson_Title: 'Quiz Les bases',
@@ -334,7 +334,7 @@ async function createDemoData() {
       // Chapter 2: Les formules
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les formules',
         Chapter_Order: 2,
         Lesson_Title: 'Introduction aux formules',
@@ -349,7 +349,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les formules',
         Chapter_Order: 2,
         Lesson_Title: 'Formules avancées',
@@ -364,7 +364,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les formules',
         Chapter_Order: 2,
         Lesson_Title: 'Quiz Formules',
@@ -380,7 +380,7 @@ async function createDemoData() {
       // Chapter 3: Les widgets
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les widgets',
         Chapter_Order: 3,
         Lesson_Title: 'Widgets personnalisés',
@@ -395,7 +395,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les widgets',
         Chapter_Order: 3,
         Lesson_Title: 'Installer un widget',
@@ -410,7 +410,7 @@ async function createDemoData() {
       },
       {
         Course_Title: 'Introduction à Grist',
-        Course_Thumbnail: 'https://www.gristup.fr/logo-gristup.svg',
+        Course_Thumbnail: '',
         Chapter_Title: 'Les widgets',
         Chapter_Order: 3,
         Lesson_Title: 'Quiz final',
