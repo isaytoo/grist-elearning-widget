@@ -514,6 +514,12 @@ async function setupWidget() {
       Quiz_CorrectAnswer: 'Quiz_CorrectAnswer'
     };
     
+    // Restore sidebar and main layout
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.display = '';
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) mainContent.style.flex = '';
+    
     await processRecords(records);
     state.isReady = true;
     
