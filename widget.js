@@ -318,40 +318,165 @@ function showSetupUI(needsTableCreation) {
   const content = document.getElementById('lessonContent');
   content.style.display = 'block';
   
-  if (needsTableCreation) {
-    content.innerHTML = `
-      <div class="welcome-screen" style="text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:20px;">📚</div>
-        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Bienvenue dans E-Learning' : 'Welcome to E-Learning'}</h2>
-        <p style="margin-bottom:24px;color:var(--text-secondary);">
-          ${state.lang === 'fr' 
-            ? 'Créez une table de démonstration pour découvrir le widget E-Learning.' 
-            : 'Create a demo table to explore the E-Learning widget.'}
-        </p>
-        <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
-          ${state.lang === 'fr' ? '✨ Créer la table de démonstration' : '✨ Create demo table'}
-        </button>
+  const setupStyles = `
+    <style>
+      .setup-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        padding: 40px 20px;
+        animation: fadeInUp 0.6s ease;
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .setup-icon {
+        width: 120px;
+        height: 120px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+        margin-bottom: 32px;
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      .setup-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary, #1e293b);
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+      }
+      .setup-desc {
+        font-size: 16px;
+        color: var(--text-secondary, #64748b);
+        max-width: 420px;
+        line-height: 1.6;
+        margin-bottom: 36px;
+      }
+      .setup-features {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .setup-feature {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-secondary, #64748b);
+      }
+      .setup-feature-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .setup-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .setup-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+      }
+      .setup-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+      }
+      .setup-btn:hover::before {
+        left: 100%;
+      }
+      .setup-btn:active {
+        transform: translateY(0);
+      }
+      .setup-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+    </style>
+  `;
+
+  const btnLabel = needsTableCreation
+    ? (state.lang === 'fr' ? 'Créer la table de démonstration' : 'Create demo table')
+    : (state.lang === 'fr' ? 'Ajouter des données de démonstration' : 'Add demo data');
+
+  const title = needsTableCreation
+    ? (state.lang === 'fr' ? 'Bienvenue dans E-Learning' : 'Welcome to E-Learning')
+    : (state.lang === 'fr' ? 'Table "Elearning" vide' : 'Empty "Elearning" table');
+
+  const desc = needsTableCreation
+    ? (state.lang === 'fr' ? 'Créez une table de démonstration pour découvrir toutes les fonctionnalités du widget E-Learning.' : 'Create a demo table to explore all E-Learning widget features.')
+    : (state.lang === 'fr' ? 'La table Elearning existe mais est vide. Ajoutez des données de démonstration pour commencer.' : 'The Elearning table exists but is empty. Add demo data to get started.');
+
+  content.innerHTML = setupStyles + `
+    <div class="setup-container">
+      <div class="setup-icon">📚</div>
+      <h2 class="setup-title">${title}</h2>
+      <p class="setup-desc">${desc}</p>
+      <div class="setup-features">
+        <div class="setup-feature">
+          <div class="setup-feature-icon">🎥</div>
+          <span>${state.lang === 'fr' ? 'Vidéos' : 'Videos'}</span>
+        </div>
+        <div class="setup-feature">
+          <div class="setup-feature-icon">📖</div>
+          <span>${state.lang === 'fr' ? 'Leçons' : 'Lessons'}</span>
+        </div>
+        <div class="setup-feature">
+          <div class="setup-feature-icon">🧠</div>
+          <span>Quiz</span>
+        </div>
+        <div class="setup-feature">
+          <div class="setup-feature-icon">🏆</div>
+          <span>${state.lang === 'fr' ? 'Certificat' : 'Certificate'}</span>
+        </div>
       </div>
-    `;
-    document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
-  } else {
-    // Table exists but is empty
-    content.innerHTML = `
-      <div class="welcome-screen" style="text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:20px;">📋</div>
-        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Table "Elearning" vide' : 'Empty "Elearning" table'}</h2>
-        <p style="margin-bottom:24px;color:var(--text-secondary);">
-          ${state.lang === 'fr' 
-            ? 'La table Elearning existe mais est vide. Ajoutez des données ou créez des données de démonstration.' 
-            : 'The Elearning table exists but is empty. Add data or create demo data.'}
-        </p>
-        <button id="btnAddDemoData" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
-          ${state.lang === 'fr' ? '✨ Ajouter des données de démonstration' : '✨ Add demo data'}
-        </button>
-      </div>
-    `;
-    document.getElementById('btnAddDemoData').addEventListener('click', addDemoDataToExistingTable);
-  }
+      <button id="btnSetupAction" class="setup-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        ${btnLabel}
+      </button>
+    </div>
+  `;
+
+  document.getElementById('btnSetupAction').addEventListener('click', needsTableCreation ? createDemoData : addDemoDataToExistingTable);
 }
 
 async function setupWidget() {
