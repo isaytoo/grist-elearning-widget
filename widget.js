@@ -466,12 +466,19 @@ async function createDemoData() {
       }]
     ]);
     
-    // Reload will happen automatically via onRecords
+    // Show success message with instructions
     content.innerHTML = `
       <div class="welcome-screen" style="text-align:center;padding:40px;">
         <div style="font-size:64px;margin-bottom:20px;">✅</div>
-        <h2>${state.lang === 'fr' ? 'Données créées avec succès !' : 'Data created successfully!'}</h2>
-        <p style="color:var(--text-secondary);">${state.lang === 'fr' ? 'Rechargement...' : 'Reloading...'}</p>
+        <h2>${state.lang === 'fr' ? 'Table "Elearning" créée avec succès !' : 'Table "Elearning" created successfully!'}</h2>
+        <div style="text-align:left;max-width:400px;margin:24px auto;padding:20px;background:var(--bg-secondary);border-radius:8px;">
+          <p style="font-weight:600;margin-bottom:12px;">${state.lang === 'fr' ? 'Pour terminer la configuration :' : 'To complete setup:'}</p>
+          <ol style="margin:0;padding-left:20px;line-height:1.8;">
+            <li>${state.lang === 'fr' ? 'Cliquez sur "Données source" (panneau de droite)' : 'Click "Data source" (right panel)'}</li>
+            <li>${state.lang === 'fr' ? 'Sélectionnez la table "Elearning"' : 'Select the "Elearning" table'}</li>
+            <li>${state.lang === 'fr' ? 'Mappez chaque colonne (elles ont le même nom)' : 'Map each column (they have the same name)'}</li>
+          </ol>
+        </div>
       </div>
     `;
     
