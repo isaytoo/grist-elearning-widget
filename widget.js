@@ -303,11 +303,17 @@ function showSetupUI(needsTableCreation) {
   // Hide loading overlay
   hideLoading();
   
-  // Hide all other screens
+  // Hide sidebar and all other screens - show only setup content
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.style.display = 'none';
   const welcomeScreen = document.getElementById('welcomeScreen');
   if (welcomeScreen) welcomeScreen.style.display = 'none';
   const lessonContainer = document.getElementById('lessonContainer');
   if (lessonContainer) lessonContainer.style.display = 'block';
+  
+  // Make main content take full width
+  const mainContent = document.querySelector('.main-content');
+  if (mainContent) mainContent.style.flex = '1';
   
   const content = document.getElementById('lessonContent');
   content.style.display = 'block';
