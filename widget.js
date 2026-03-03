@@ -189,7 +189,7 @@ function updateUILanguage() {
 grist.ready({
   requiredAccess: 'full',
   columns: [
-    { name: 'Course_Title', title: 'Titre du cours', type: 'Any' },
+    { name: 'Course_Title', title: 'Titre du cours', type: 'Any', optional: true },
     { name: 'Course_Description', title: 'Description du cours', type: 'Any', optional: true },
     { name: 'Course_Thumbnail', title: 'Image du cours', type: 'Any', optional: true },
     { name: 'Chapter_Title', title: 'Titre du chapitre', type: 'Any', optional: true },
