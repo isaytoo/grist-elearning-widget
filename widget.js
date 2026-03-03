@@ -425,11 +425,29 @@ async function createDemoData() {
       }
     ];
     
-    // Get current table ID
-    const table = await grist.getTable();
-    const tableId = table ? table.tableId : await grist.selectedTable.getTableId();
+    // Create the Elearning table with all required columns
+    const tableId = 'Elearning';
     
-    // Add records to the table
+    await grist.docApi.applyUserActions([
+      // Create table with columns
+      ['AddTable', tableId, [
+        { id: 'Course_Title', type: 'Text' },
+        { id: 'Course_Thumbnail', type: 'Text' },
+        { id: 'Chapter_Title', type: 'Text' },
+        { id: 'Chapter_Order', type: 'Int' },
+        { id: 'Lesson_Title', type: 'Text' },
+        { id: 'Lesson_Type', type: 'Choice', widgetOptions: JSON.stringify({ choices: ['video', 'text', 'quiz'] }) },
+        { id: 'Lesson_Content', type: 'Text' },
+        { id: 'Video_URL', type: 'Text' },
+        { id: 'Duration', type: 'Int' },
+        { id: 'Lesson_Order', type: 'Int' },
+        { id: 'Quiz_Question', type: 'Text' },
+        { id: 'Quiz_Options', type: 'Text' },
+        { id: 'Quiz_CorrectAnswer', type: 'Text' }
+      ]]
+    ]);
+    
+    // Add demo records to the new table
     await grist.docApi.applyUserActions([
       ['BulkAddRecord', tableId, demoRecords.map(() => null), {
         Course_Title: demoRecords.map(r => r.Course_Title),
@@ -466,8 +484,8 @@ async function createDemoData() {
         <p style="color:var(--text-secondary);">${error.message}</p>
         <p style="margin-top:16px;font-size:14px;color:var(--text-secondary);">
           ${state.lang === 'fr' 
-            ? 'Assurez-vous que la table contient les colonnes requises (Course_Title, Chapter_Title, Lesson_Title, etc.)' 
-            : 'Make sure the table has the required columns (Course_Title, Chapter_Title, Lesson_Title, etc.)'}
+            ? 'Assurez-vous que vous avez les droits de modification sur ce document.' 
+            : 'Make sure you have edit permissions on this document.'}
         </p>
       </div>
     `;
