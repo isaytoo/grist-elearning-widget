@@ -299,12 +299,18 @@ async function ensureElearningTableExists() {
 
 function showSetupUI(needsTableCreation) {
   console.log('showSetupUI called, needsTableCreation:', needsTableCreation);
-  const content = document.getElementById('lessonContent');
-  content.style.display = 'block';
   
-  // Also hide the welcome screen if visible
+  // Hide loading overlay
+  hideLoading();
+  
+  // Hide all other screens
   const welcomeScreen = document.getElementById('welcomeScreen');
   if (welcomeScreen) welcomeScreen.style.display = 'none';
+  const lessonContainer = document.getElementById('lessonContainer');
+  if (lessonContainer) lessonContainer.style.display = 'block';
+  
+  const content = document.getElementById('lessonContent');
+  content.style.display = 'block';
   
   if (needsTableCreation) {
     content.innerHTML = `
