@@ -186,39 +186,147 @@ function updateUILanguage() {
 // INITIALIZATION
 // ============================================================================
 
-grist.ready({
-  requiredAccess: 'full',
-  columns: [
-    { name: 'Course_Title', title: 'Titre du cours', type: 'Any', optional: true },
-    { name: 'Course_Description', title: 'Description du cours', type: 'Any', optional: true },
-    { name: 'Course_Thumbnail', title: 'Image du cours', type: 'Any', optional: true },
-    { name: 'Chapter_Title', title: 'Titre du chapitre', type: 'Any', optional: true },
-    { name: 'Chapter_Order', title: 'Ordre du chapitre', type: 'Any', optional: true },
-    { name: 'Lesson_Title', title: 'Titre de la leçon', type: 'Any', optional: true },
-    { name: 'Lesson_Type', title: 'Type de leçon', type: 'Any', optional: true },
-    { name: 'Lesson_Content', title: 'Contenu de la leçon', type: 'Any', optional: true },
-    { name: 'Lesson_VideoUrl', title: 'URL de la vidéo', type: 'Any', optional: true },
-    { name: 'Lesson_Duration', title: 'Durée (min)', type: 'Any', optional: true },
-    { name: 'Lesson_Order', title: 'Ordre de la leçon', type: 'Any', optional: true },
-    { name: 'Quiz_Question', title: 'Question du quiz', type: 'Any', optional: true },
-    { name: 'Quiz_Options', title: 'Options (séparées par |)', type: 'Any', optional: true },
-    { name: 'Quiz_CorrectAnswer', title: 'Réponse correcte', type: 'Any', optional: true }
-  ]
-});
-
-grist.onRecords(async (records, mappings) => {
-  state.mappedColumns = mappings || {};
-  
-  // Si aucun enregistrement, proposer de créer la table démo
-  if (!records || records.length === 0) {
-    await checkAndCreateDemoTable();
-    return;
+// Initialize widget
+(async function() {
+  try {
+    console.log('E-Learning Widget: Starting initialization...');
+    
+    await grist.ready({ requiredAccess: 'full' });
+    
+    console.log('Grist ready, checking for Elearning table...');
+    
+    // Check if Elearning table exists, if not offer to create it
+    const needsSetup = await ensureElearningTableExists();
+    
+    if (!needsSetup) {
+      // Table exists and has data, setup normal widget behavior
+      console.log('Elearning table found, setting up widget...');
+      await setupWidget();
+    }
+    
+    hideLoading();
+    console.log('Widget initialized successfully!');
+  } catch (error) {
+    console.error('FATAL ERROR during widget initialization:', error);
+    document.getElementById('lessonContent').style.display = 'block';
+    document.getElementById('lessonContent').innerHTML = `
+      <div style="padding: 20px; text-align: center;">
+        <div style="font-size:64px;margin-bottom:20px;">❌</div>
+        <h2>Erreur de chargement</h2>
+        <p>${error.message}</p>
+      </div>
+    `;
+    hideLoading();
   }
+})();
+
+// Check if Elearning table exists, return true if setup UI was shown
+async function ensureElearningTableExists() {
+  try {
+    const tables = await grist.docApi.listTables();
+    console.log('Tables found:', tables);
+    
+    if (tables.includes('Elearning')) {
+      // Check if table has data
+      const data = await grist.docApi.fetchTable('Elearning');
+      if (data && data.id && data.id.length > 0) {
+        return false; // Table exists with data, no setup needed
+      }
+    }
+    
+    // Table doesn't exist or is empty - show setup UI
+    await showSetupUI(!tables.includes('Elearning'));
+    return true;
+    
+  } catch (e) {
+    console.warn('Could not check tables:', e);
+    return false;
+  }
+}
+
+async function showSetupUI(needsTableCreation) {
+  const content = document.getElementById('lessonContent');
+  content.style.display = 'block';
   
-  await processRecords(records);
-  hideLoading();
-  state.isReady = true;
-});
+  if (needsTableCreation) {
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">📚</div>
+        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Bienvenue dans E-Learning' : 'Welcome to E-Learning'}</h2>
+        <p style="margin-bottom:24px;color:var(--text-secondary);">
+          ${state.lang === 'fr' 
+            ? 'Créez une table de démonstration pour découvrir le widget E-Learning.' 
+            : 'Create a demo table to explore the E-Learning widget.'}
+        </p>
+        <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
+          ${state.lang === 'fr' ? '✨ Créer la table de démonstration' : '✨ Create demo table'}
+        </button>
+      </div>
+    `;
+    document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
+  } else {
+    // Table exists but is empty
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">📋</div>
+        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Table "Elearning" vide' : 'Empty "Elearning" table'}</h2>
+        <p style="margin-bottom:24px;color:var(--text-secondary);">
+          ${state.lang === 'fr' 
+            ? 'La table Elearning existe mais est vide. Ajoutez des données ou créez des données de démonstration.' 
+            : 'The Elearning table exists but is empty. Add data or create demo data.'}
+        </p>
+        <button id="btnAddDemoData" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
+          ${state.lang === 'fr' ? '✨ Ajouter des données de démonstration' : '✨ Add demo data'}
+        </button>
+      </div>
+    `;
+    document.getElementById('btnAddDemoData').addEventListener('click', addDemoDataToExistingTable);
+  }
+}
+
+async function setupWidget() {
+  // Fetch data from Elearning table
+  try {
+    const data = await grist.docApi.fetchTable('Elearning');
+    
+    // Convert to records format
+    const records = [];
+    if (data && data.id) {
+      for (let i = 0; i < data.id.length; i++) {
+        const record = { id: data.id[i] };
+        for (const key of Object.keys(data)) {
+          record[key] = data[key][i];
+        }
+        records.push(record);
+      }
+    }
+    
+    // Create a simple mapping (column names match)
+    state.mappedColumns = {
+      Course_Title: 'Course_Title',
+      Course_Description: 'Course_Description', 
+      Course_Thumbnail: 'Course_Thumbnail',
+      Chapter_Title: 'Chapter_Title',
+      Chapter_Order: 'Chapter_Order',
+      Lesson_Title: 'Lesson_Title',
+      Lesson_Type: 'Lesson_Type',
+      Lesson_Content: 'Lesson_Content',
+      Lesson_VideoUrl: 'Video_URL',
+      Lesson_Duration: 'Duration',
+      Lesson_Order: 'Lesson_Order',
+      Quiz_Question: 'Quiz_Question',
+      Quiz_Options: 'Quiz_Options',
+      Quiz_CorrectAnswer: 'Quiz_CorrectAnswer'
+    };
+    
+    await processRecords(records);
+    state.isReady = true;
+    
+  } catch (error) {
+    console.error('Error setting up widget:', error);
+    throw error;
+  }
+}
 
 grist.onRecord(async (record) => {
   if (!state.isReady || !record) return;
@@ -247,74 +355,56 @@ async function getUserEmail() {
 
 getUserEmail();
 
-// ============================================================================
-// DEMO TABLE CREATION
-// ============================================================================
-
-async function checkAndCreateDemoTable() {
-  console.log('checkAndCreateDemoTable called');
-  const content = document.getElementById('lessonContent');
-  content.style.display = 'block';
-  
-  // Check if Elearning table already exists
-  let elearningExists = false;
-  try {
-    const tables = await grist.docApi.listTables();
-    console.log('Tables found:', tables);
-    elearningExists = tables.includes('Elearning');
-  } catch (e) {
-    console.warn('Could not list tables:', e);
-  }
-  
-  if (elearningExists) {
-    // Table exists but widget is not linked to it - show instructions
-    content.innerHTML = `
-      <div class="welcome-screen" style="text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:20px;">📋</div>
-        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Table "Elearning" détectée' : 'Table "Elearning" detected'}</h2>
-        <div style="text-align:left;max-width:400px;margin:24px auto;padding:20px;background:var(--bg-secondary);border-radius:8px;">
-          <p style="font-weight:600;margin-bottom:12px;">${state.lang === 'fr' ? 'Pour configurer le widget :' : 'To configure the widget:'}</p>
-          <ol style="margin:0;padding-left:20px;line-height:1.8;">
-            <li>${state.lang === 'fr' ? 'Cliquez sur "Données source" (panneau de droite)' : 'Click "Data source" (right panel)'}</li>
-            <li>${state.lang === 'fr' ? 'Sélectionnez la table "Elearning"' : 'Select the "Elearning" table'}</li>
-            <li>${state.lang === 'fr' ? 'Mappez chaque colonne (elles ont le même nom)' : 'Map each column (they have the same name)'}</li>
-          </ol>
-        </div>
-      </div>
-    `;
-  } else {
-    // Table doesn't exist - offer to create it
-    content.innerHTML = `
-      <div class="welcome-screen" style="text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:20px;">📚</div>
-        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Bienvenue dans E-Learning' : 'Welcome to E-Learning'}</h2>
-        <p style="margin-bottom:24px;color:var(--text-secondary);">
-          ${state.lang === 'fr' 
-            ? 'Créez une table de démonstration pour découvrir le widget E-Learning.' 
-            : 'Create a demo table to explore the E-Learning widget.'}
-        </p>
-        <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
-          ${state.lang === 'fr' ? '✨ Créer la table de démonstration' : '✨ Create demo table'}
-        </button>
-      </div>
-    `;
-    document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
-  }
-  hideLoading();
-}
-
-async function createDemoData() {
+// Add demo data to existing empty Elearning table
+async function addDemoDataToExistingTable() {
   const content = document.getElementById('lessonContent');
   content.innerHTML = `
     <div class="welcome-screen" style="text-align:center;padding:40px;">
       <div style="font-size:64px;margin-bottom:20px;">⏳</div>
-      <h2>${state.lang === 'fr' ? 'Création en cours...' : 'Creating...'}</h2>
+      <h2>${state.lang === 'fr' ? 'Ajout des données...' : 'Adding data...'}</h2>
     </div>
   `;
   
   try {
-    // Demo data for E-Learning
-    const demoRecords = [
+    const demoRecords = getDemoRecords();
+    
+    // Add records to existing Elearning table
+    await grist.docApi.applyUserActions([
+      ['BulkAddRecord', 'Elearning', demoRecords.map(() => null), {
+        Course_Title: demoRecords.map(r => r.Course_Title),
+        Course_Thumbnail: demoRecords.map(r => r.Course_Thumbnail),
+        Chapter_Title: demoRecords.map(r => r.Chapter_Title),
+        Chapter_Order: demoRecords.map(r => r.Chapter_Order),
+        Lesson_Title: demoRecords.map(r => r.Lesson_Title),
+        Lesson_Type: demoRecords.map(r => r.Lesson_Type),
+        Lesson_Content: demoRecords.map(r => r.Lesson_Content),
+        Video_URL: demoRecords.map(r => r.Video_URL),
+        Duration: demoRecords.map(r => r.Duration),
+        Lesson_Order: demoRecords.map(r => r.Lesson_Order),
+        Quiz_Question: demoRecords.map(r => r.Quiz_Question),
+        Quiz_Options: demoRecords.map(r => r.Quiz_Options),
+        Quiz_CorrectAnswer: demoRecords.map(r => r.Quiz_CorrectAnswer)
+      }]
+    ]);
+    
+    // Reload widget
+    await setupWidget();
+    hideLoading();
+    
+  } catch (error) {
+    console.error('Error adding demo data:', error);
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">❌</div>
+        <h2>${state.lang === 'fr' ? 'Erreur' : 'Error'}</h2>
+        <p style="color:var(--text-secondary);">${error.message}</p>
+      </div>
+    `;
+  }
+}
+
+function getDemoRecords() {
+  return [
       // Chapter 1: Les bases
       {
         Course_Title: 'Introduction à Grist',
@@ -453,13 +543,24 @@ async function createDemoData() {
         Quiz_Options: 'Sur github.com uniquement|Sur gristup.fr|Dans les paramètres Grist|Nulle part',
         Quiz_CorrectAnswer: '1'
       }
-    ];
-    
-    // Create the Elearning table with all required columns
+  ];
+}
+
+async function createDemoData() {
+  const content = document.getElementById('lessonContent');
+  content.innerHTML = `
+    <div class="welcome-screen" style="text-align:center;padding:40px;">
+      <div style="font-size:64px;margin-bottom:20px;">⏳</div>
+      <h2>${state.lang === 'fr' ? 'Création en cours...' : 'Creating...'}</h2>
+    </div>
+  `;
+  
+  try {
+    const demoRecords = getDemoRecords();
     const tableId = 'Elearning';
     
+    // Create the Elearning table with all required columns
     await grist.docApi.applyUserActions([
-      // Create table with columns
       ['AddTable', tableId, [
         { id: 'Course_Title', type: 'Text' },
         { id: 'Course_Thumbnail', type: 'Text' },
@@ -496,21 +597,9 @@ async function createDemoData() {
       }]
     ]);
     
-    // Show success message with instructions
-    content.innerHTML = `
-      <div class="welcome-screen" style="text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:20px;">✅</div>
-        <h2>${state.lang === 'fr' ? 'Table "Elearning" créée avec succès !' : 'Table "Elearning" created successfully!'}</h2>
-        <div style="text-align:left;max-width:400px;margin:24px auto;padding:20px;background:var(--bg-secondary);border-radius:8px;">
-          <p style="font-weight:600;margin-bottom:12px;">${state.lang === 'fr' ? 'Pour terminer la configuration :' : 'To complete setup:'}</p>
-          <ol style="margin:0;padding-left:20px;line-height:1.8;">
-            <li>${state.lang === 'fr' ? 'Cliquez sur "Données source" (panneau de droite)' : 'Click "Data source" (right panel)'}</li>
-            <li>${state.lang === 'fr' ? 'Sélectionnez la table "Elearning"' : 'Select the "Elearning" table'}</li>
-            <li>${state.lang === 'fr' ? 'Mappez chaque colonne (elles ont le même nom)' : 'Map each column (they have the same name)'}</li>
-          </ol>
-        </div>
-      </div>
-    `;
+    // Reload widget with new data
+    await setupWidget();
+    hideLoading();
     
   } catch (error) {
     console.error('Error creating demo data:', error);
