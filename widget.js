@@ -254,6 +254,7 @@ getUserEmail();
 async function checkAndCreateDemoTable() {
   console.log('checkAndCreateDemoTable called');
   const content = document.getElementById('lessonContent');
+  content.style.display = 'block';
   
   // Check if Elearning table already exists
   let elearningExists = false;
