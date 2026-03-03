@@ -252,12 +252,14 @@ getUserEmail();
 // ============================================================================
 
 async function checkAndCreateDemoTable() {
+  console.log('checkAndCreateDemoTable called');
   const content = document.getElementById('lessonContent');
   
   // Check if Elearning table already exists
   let elearningExists = false;
   try {
     const tables = await grist.docApi.listTables();
+    console.log('Tables found:', tables);
     elearningExists = tables.includes('Elearning');
   } catch (e) {
     console.warn('Could not list tables:', e);
