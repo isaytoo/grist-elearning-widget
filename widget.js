@@ -252,25 +252,52 @@ getUserEmail();
 // ============================================================================
 
 async function checkAndCreateDemoTable() {
-  // Show a modal asking if user wants to create demo data
   const content = document.getElementById('lessonContent');
-  content.innerHTML = `
-    <div class="welcome-screen" style="text-align:center;padding:40px;">
-      <div style="font-size:64px;margin-bottom:20px;">📚</div>
-      <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Aucune donnée trouvée' : 'No data found'}</h2>
-      <p style="margin-bottom:24px;color:var(--text-secondary);">
-        ${state.lang === 'fr' 
-          ? 'Cette table est vide. Voulez-vous créer des données de démonstration pour découvrir le widget E-Learning ?' 
-          : 'This table is empty. Would you like to create demo data to explore the E-Learning widget?'}
-      </p>
-      <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
-        ${state.lang === 'fr' ? '✨ Créer les données de démonstration' : '✨ Create demo data'}
-      </button>
-    </div>
-  `;
-  hideLoading();
   
-  document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
+  // Check if Elearning table already exists
+  let elearningExists = false;
+  try {
+    const tables = await grist.docApi.listTables();
+    elearningExists = tables.includes('Elearning');
+  } catch (e) {
+    console.warn('Could not list tables:', e);
+  }
+  
+  if (elearningExists) {
+    // Table exists but widget is not linked to it - show instructions
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">📋</div>
+        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Table "Elearning" détectée' : 'Table "Elearning" detected'}</h2>
+        <div style="text-align:left;max-width:400px;margin:24px auto;padding:20px;background:var(--bg-secondary);border-radius:8px;">
+          <p style="font-weight:600;margin-bottom:12px;">${state.lang === 'fr' ? 'Pour configurer le widget :' : 'To configure the widget:'}</p>
+          <ol style="margin:0;padding-left:20px;line-height:1.8;">
+            <li>${state.lang === 'fr' ? 'Cliquez sur "Données source" (panneau de droite)' : 'Click "Data source" (right panel)'}</li>
+            <li>${state.lang === 'fr' ? 'Sélectionnez la table "Elearning"' : 'Select the "Elearning" table'}</li>
+            <li>${state.lang === 'fr' ? 'Mappez chaque colonne (elles ont le même nom)' : 'Map each column (they have the same name)'}</li>
+          </ol>
+        </div>
+      </div>
+    `;
+  } else {
+    // Table doesn't exist - offer to create it
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">📚</div>
+        <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Bienvenue dans E-Learning' : 'Welcome to E-Learning'}</h2>
+        <p style="margin-bottom:24px;color:var(--text-secondary);">
+          ${state.lang === 'fr' 
+            ? 'Créez une table de démonstration pour découvrir le widget E-Learning.' 
+            : 'Create a demo table to explore the E-Learning widget.'}
+        </p>
+        <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
+          ${state.lang === 'fr' ? '✨ Créer la table de démonstration' : '✨ Create demo table'}
+        </button>
+      </div>
+    `;
+    document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
+  }
+  hideLoading();
 }
 
 async function createDemoData() {
