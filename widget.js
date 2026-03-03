@@ -196,20 +196,15 @@ async function initializeWidget() {
   initializationInProgress = true;
   
   try {
-    console.log('E-Learning Widget v2: Starting initialization...');
-    
     // Check if Elearning table exists, if not offer to create it
     const needsSetup = await ensureElearningTableExists();
     
     if (!needsSetup) {
-      // Table exists and has data, setup normal widget behavior
-      console.log('Elearning table found, setting up widget...');
       await setupWidget();
     }
     
     hideLoading();
     isInitialized = true;
-    console.log('Widget initialized successfully!');
   } catch (error) {
     console.error('Error during widget initialization:', error);
     const content = document.getElementById('lessonContent');
@@ -254,7 +249,6 @@ grist.ready({ requiredAccess: 'full' });
 
 // Listen for options/access changes - this is called when access level changes
 grist.onOptions(async (options) => {
-  console.log('onOptions called, reinitializing...', options);
   if (!isInitialized) {
     await initializeWidget();
   }
@@ -271,24 +265,17 @@ setTimeout(() => {
 async function ensureElearningTableExists() {
   try {
     const tables = await grist.docApi.listTables();
-    console.log('Tables found:', tables);
     
     if (tables.includes('Elearning')) {
       // Check if table has data
       const data = await grist.docApi.fetchTable('Elearning');
       if (data && data.id && data.id.length > 0) {
-        console.log('Elearning table exists with data, no setup needed');
         return false; // Table exists with data, no setup needed
       }
-      console.log('Elearning table exists but is empty');
-    } else {
-      console.log('Elearning table does not exist, showing setup UI');
     }
     
     // Table doesn't exist or is empty - show setup UI
-    console.log('Calling showSetupUI with needsTableCreation:', !tables.includes('Elearning'));
     showSetupUI(!tables.includes('Elearning'));
-    console.log('showSetupUI completed, returning true');
     return true;
     
   } catch (e) {
@@ -298,7 +285,6 @@ async function ensureElearningTableExists() {
 }
 
 function showSetupUI(needsTableCreation) {
-  console.log('showSetupUI called, needsTableCreation:', needsTableCreation);
   
   // Hide loading overlay
   hideLoading();
@@ -748,7 +734,6 @@ function getDemoRecords() {
 }
 
 async function createDemoData() {
-  console.log('createDemoData called');
   const content = document.getElementById('lessonContent');
   content.innerHTML = `
     <div class="welcome-screen" style="text-align:center;padding:40px;">
@@ -761,7 +746,6 @@ async function createDemoData() {
     const demoRecords = getDemoRecords();
     const tableId = 'Elearning';
     
-    console.log('Creating Elearning table...');
     // Create the Elearning table with all required columns
     await grist.docApi.applyUserActions([
       ['AddTable', tableId, [
@@ -781,7 +765,6 @@ async function createDemoData() {
       ]]
     ]);
     
-    console.log('Table created, adding demo records...');
     // Add demo records to the new table
     await grist.docApi.applyUserActions([
       ['BulkAddRecord', tableId, demoRecords.map(() => null), {
@@ -801,10 +784,8 @@ async function createDemoData() {
       }]
     ]);
     
-    console.log('Demo records added, reloading widget...');
     // Reload widget with new data
     await setupWidget();
-    console.log('Widget setup complete');
     hideLoading();
     
   } catch (error) {
