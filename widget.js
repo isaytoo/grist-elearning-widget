@@ -611,6 +611,7 @@ function getDemoRecords() {
 }
 
 async function createDemoData() {
+  console.log('createDemoData called');
   const content = document.getElementById('lessonContent');
   content.innerHTML = `
     <div class="welcome-screen" style="text-align:center;padding:40px;">
@@ -623,6 +624,7 @@ async function createDemoData() {
     const demoRecords = getDemoRecords();
     const tableId = 'Elearning';
     
+    console.log('Creating Elearning table...');
     // Create the Elearning table with all required columns
     await grist.docApi.applyUserActions([
       ['AddTable', tableId, [
@@ -642,6 +644,7 @@ async function createDemoData() {
       ]]
     ]);
     
+    console.log('Table created, adding demo records...');
     // Add demo records to the new table
     await grist.docApi.applyUserActions([
       ['BulkAddRecord', tableId, demoRecords.map(() => null), {
@@ -661,8 +664,10 @@ async function createDemoData() {
       }]
     ]);
     
+    console.log('Demo records added, reloading widget...');
     // Reload widget with new data
     await setupWidget();
+    console.log('Widget setup complete');
     hideLoading();
     
   } catch (error) {
