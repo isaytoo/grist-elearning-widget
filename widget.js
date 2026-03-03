@@ -208,6 +208,13 @@ grist.ready({
 
 grist.onRecords(async (records, mappings) => {
   state.mappedColumns = mappings || {};
+  
+  // Si aucun enregistrement, proposer de créer la table démo
+  if (!records || records.length === 0) {
+    await checkAndCreateDemoTable();
+    return;
+  }
+  
   await processRecords(records);
   hideLoading();
   state.isReady = true;
@@ -239,6 +246,233 @@ async function getUserEmail() {
 }
 
 getUserEmail();
+
+// ============================================================================
+// DEMO TABLE CREATION
+// ============================================================================
+
+async function checkAndCreateDemoTable() {
+  // Show a modal asking if user wants to create demo data
+  const content = document.getElementById('lessonContent');
+  content.innerHTML = `
+    <div class="welcome-screen" style="text-align:center;padding:40px;">
+      <div style="font-size:64px;margin-bottom:20px;">📚</div>
+      <h2 style="margin-bottom:16px;">${state.lang === 'fr' ? 'Aucune donnée trouvée' : 'No data found'}</h2>
+      <p style="margin-bottom:24px;color:var(--text-secondary);">
+        ${state.lang === 'fr' 
+          ? 'Cette table est vide. Voulez-vous créer des données de démonstration pour découvrir le widget E-Learning ?' 
+          : 'This table is empty. Would you like to create demo data to explore the E-Learning widget?'}
+      </p>
+      <button id="btnCreateDemo" class="btn-primary" style="padding:12px 24px;font-size:16px;cursor:pointer;">
+        ${state.lang === 'fr' ? '✨ Créer les données de démonstration' : '✨ Create demo data'}
+      </button>
+    </div>
+  `;
+  hideLoading();
+  
+  document.getElementById('btnCreateDemo').addEventListener('click', createDemoData);
+}
+
+async function createDemoData() {
+  const content = document.getElementById('lessonContent');
+  content.innerHTML = `
+    <div class="welcome-screen" style="text-align:center;padding:40px;">
+      <div style="font-size:64px;margin-bottom:20px;">⏳</div>
+      <h2>${state.lang === 'fr' ? 'Création en cours...' : 'Creating...'}</h2>
+    </div>
+  `;
+  
+  try {
+    // Demo data for E-Learning
+    const demoRecords = [
+      // Chapter 1: Les bases
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les bases',
+        Chapter_Order: 1,
+        Lesson_Title: 'Bienvenue dans Grist',
+        Lesson_Type: 'video',
+        Lesson_Content: 'Bienvenue dans cette formation ! Grist est un tableur moderne qui combine la simplicité des feuilles de calcul avec la puissance des bases de données.',
+        Video_URL: 'https://www.youtube.com/embed/XYZ123',
+        Duration: 5,
+        Lesson_Order: 1,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les bases',
+        Chapter_Order: 1,
+        Lesson_Title: 'Créer votre premier document',
+        Lesson_Type: 'text',
+        Lesson_Content: "Pour créer votre premier document Grist :\n\n1. Cliquez sur 'Nouveau document'\n2. Choisissez un modèle ou partez de zéro\n3. Nommez votre document\n\nVous pouvez maintenant ajouter des tables et des colonnes !",
+        Video_URL: '',
+        Duration: 8,
+        Lesson_Order: 2,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les bases',
+        Chapter_Order: 1,
+        Lesson_Title: 'Quiz Les bases',
+        Lesson_Type: 'quiz',
+        Lesson_Content: 'Testez vos connaissances sur les bases de Grist.',
+        Video_URL: '',
+        Duration: 2,
+        Lesson_Order: 3,
+        Quiz_Question: 'Comment créer un nouveau document dans Grist ?',
+        Quiz_Options: 'Fichier > Nouveau|Cliquer sur "Nouveau document"|Ctrl+N|Toutes ces réponses',
+        Quiz_CorrectAnswer: '1'
+      },
+      // Chapter 2: Les formules
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les formules',
+        Chapter_Order: 2,
+        Lesson_Title: 'Introduction aux formules',
+        Lesson_Type: 'video',
+        Lesson_Content: 'Les formules dans Grist utilisent Python. Elles permettent de calculer des valeurs automatiquement.',
+        Video_URL: 'https://www.youtube.com/embed/ABC456',
+        Duration: 10,
+        Lesson_Order: 4,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les formules',
+        Chapter_Order: 2,
+        Lesson_Title: 'Formules avancées',
+        Lesson_Type: 'text',
+        Lesson_Content: "Utilisez Table.lookupOne() pour rechercher des données dans d'autres tables.\n\nExemple :\n```python\nClients.lookupOne(Email=$Email).Nom\n```",
+        Video_URL: '',
+        Duration: 12,
+        Lesson_Order: 5,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les formules',
+        Chapter_Order: 2,
+        Lesson_Title: 'Quiz Formules',
+        Lesson_Type: 'quiz',
+        Lesson_Content: 'Testez vos connaissances sur les formules.',
+        Video_URL: '',
+        Duration: 3,
+        Lesson_Order: 6,
+        Quiz_Question: 'Quel langage utilise Grist pour les formules ?',
+        Quiz_Options: 'JavaScript|Python|SQL|Excel',
+        Quiz_CorrectAnswer: '1'
+      },
+      // Chapter 3: Les widgets
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les widgets',
+        Chapter_Order: 3,
+        Lesson_Title: 'Widgets personnalisés',
+        Lesson_Type: 'video',
+        Lesson_Content: "Les widgets personnalisés permettent d'étendre les fonctionnalités de Grist avec des interfaces sur mesure.",
+        Video_URL: 'https://www.youtube.com/embed/DEF789',
+        Duration: 7,
+        Lesson_Order: 7,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les widgets',
+        Chapter_Order: 3,
+        Lesson_Title: 'Installer un widget',
+        Lesson_Type: 'text',
+        Lesson_Content: "Pour installer un widget personnalisé :\n\n1. Ajoutez une nouvelle vue 'Custom'\n2. Collez l'URL du widget\n3. Configurez les colonnes mappées\n\nVisitez gristup.fr pour découvrir notre marketplace de widgets !",
+        Video_URL: '',
+        Duration: 5,
+        Lesson_Order: 8,
+        Quiz_Question: '',
+        Quiz_Options: '',
+        Quiz_CorrectAnswer: ''
+      },
+      {
+        Course_Title: 'Introduction à Grist',
+        Course_Thumbnail: 'https://www.gristup.fr/grist-logo.png',
+        Chapter_Title: 'Les widgets',
+        Chapter_Order: 3,
+        Lesson_Title: 'Quiz final',
+        Lesson_Type: 'quiz',
+        Lesson_Content: 'Quiz final sur les widgets.',
+        Video_URL: '',
+        Duration: 3,
+        Lesson_Order: 9,
+        Quiz_Question: 'Où trouver des widgets personnalisés pour Grist ?',
+        Quiz_Options: 'Sur github.com uniquement|Sur gristup.fr|Dans les paramètres Grist|Nulle part',
+        Quiz_CorrectAnswer: '1'
+      }
+    ];
+    
+    // Get current table ID
+    const table = await grist.getTable();
+    const tableId = table ? table.tableId : await grist.selectedTable.getTableId();
+    
+    // Add records to the table
+    await grist.docApi.applyUserActions([
+      ['BulkAddRecord', tableId, demoRecords.map(() => null), {
+        Course_Title: demoRecords.map(r => r.Course_Title),
+        Course_Thumbnail: demoRecords.map(r => r.Course_Thumbnail),
+        Chapter_Title: demoRecords.map(r => r.Chapter_Title),
+        Chapter_Order: demoRecords.map(r => r.Chapter_Order),
+        Lesson_Title: demoRecords.map(r => r.Lesson_Title),
+        Lesson_Type: demoRecords.map(r => r.Lesson_Type),
+        Lesson_Content: demoRecords.map(r => r.Lesson_Content),
+        Video_URL: demoRecords.map(r => r.Video_URL),
+        Duration: demoRecords.map(r => r.Duration),
+        Lesson_Order: demoRecords.map(r => r.Lesson_Order),
+        Quiz_Question: demoRecords.map(r => r.Quiz_Question),
+        Quiz_Options: demoRecords.map(r => r.Quiz_Options),
+        Quiz_CorrectAnswer: demoRecords.map(r => r.Quiz_CorrectAnswer)
+      }]
+    ]);
+    
+    // Reload will happen automatically via onRecords
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">✅</div>
+        <h2>${state.lang === 'fr' ? 'Données créées avec succès !' : 'Data created successfully!'}</h2>
+        <p style="color:var(--text-secondary);">${state.lang === 'fr' ? 'Rechargement...' : 'Reloading...'}</p>
+      </div>
+    `;
+    
+  } catch (error) {
+    console.error('Error creating demo data:', error);
+    content.innerHTML = `
+      <div class="welcome-screen" style="text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:20px;">❌</div>
+        <h2>${state.lang === 'fr' ? 'Erreur' : 'Error'}</h2>
+        <p style="color:var(--text-secondary);">${error.message}</p>
+        <p style="margin-top:16px;font-size:14px;color:var(--text-secondary);">
+          ${state.lang === 'fr' 
+            ? 'Assurez-vous que la table contient les colonnes requises (Course_Title, Chapter_Title, Lesson_Title, etc.)' 
+            : 'Make sure the table has the required columns (Course_Title, Chapter_Title, Lesson_Title, etc.)'}
+        </p>
+      </div>
+    `;
+  }
+}
 
 // ============================================================================
 // DATA PROCESSING
@@ -413,6 +647,14 @@ function renderCourse() {
   // Update header
   document.getElementById('courseTitle').textContent = state.currentCourse.title;
   document.getElementById('courseMeta').textContent = `${state.lessons.length} ${t('lessons')}`;
+  
+  // Update thumbnail
+  const thumbnailEl = document.getElementById('courseThumbnail');
+  if (state.currentCourse.thumbnail) {
+    thumbnailEl.innerHTML = `<img src="${state.currentCourse.thumbnail}" alt="${state.currentCourse.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
+  } else {
+    thumbnailEl.innerHTML = '<span class="course-icon">🎓</span>';
+  }
   
   // Update progress
   updateProgressDisplay();
