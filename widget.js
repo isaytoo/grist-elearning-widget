@@ -196,7 +196,7 @@ async function initializeWidget() {
   initializationInProgress = true;
   
   try {
-    console.log('E-Learning Widget: Starting initialization...');
+    console.log('E-Learning Widget v2: Starting initialization...');
     
     // Check if Elearning table exists, if not offer to create it
     const needsSetup = await ensureElearningTableExists();
