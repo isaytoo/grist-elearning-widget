@@ -186,14 +186,17 @@ function updateUILanguage() {
 // INITIALIZATION
 // ============================================================================
 
+// Track initialization state
+let isInitialized = false;
+let initializationInProgress = false;
+
 // Initialize widget
-(async function() {
+async function initializeWidget() {
+  if (initializationInProgress) return;
+  initializationInProgress = true;
+  
   try {
     console.log('E-Learning Widget: Starting initialization...');
-    
-    await grist.ready({ requiredAccess: 'full' });
-    
-    console.log('Grist ready, checking for Elearning table...');
     
     // Check if Elearning table exists, if not offer to create it
     const needsSetup = await ensureElearningTableExists();
@@ -205,9 +208,10 @@ function updateUILanguage() {
     }
     
     hideLoading();
+    isInitialized = true;
     console.log('Widget initialized successfully!');
   } catch (error) {
-    console.error('FATAL ERROR during widget initialization:', error);
+    console.error('Error during widget initialization:', error);
     const content = document.getElementById('lessonContent');
     content.style.display = 'block';
     
@@ -242,7 +246,26 @@ function updateUILanguage() {
     }
     hideLoading();
   }
-})();
+  initializationInProgress = false;
+}
+
+// Start with grist.ready, then use onOptions to detect access changes
+grist.ready({ requiredAccess: 'full' });
+
+// Listen for options/access changes - this is called when access level changes
+grist.onOptions(async (options) => {
+  console.log('onOptions called, reinitializing...', options);
+  if (!isInitialized) {
+    await initializeWidget();
+  }
+});
+
+// Also try to initialize immediately after ready
+setTimeout(() => {
+  if (!isInitialized && !initializationInProgress) {
+    initializeWidget();
+  }
+}, 500);
 
 // Check if Elearning table exists, return true if setup UI was shown
 async function ensureElearningTableExists() {
