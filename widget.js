@@ -277,12 +277,16 @@ async function ensureElearningTableExists() {
       // Check if table has data
       const data = await grist.docApi.fetchTable('Elearning');
       if (data && data.id && data.id.length > 0) {
+        console.log('Elearning table exists with data, no setup needed');
         return false; // Table exists with data, no setup needed
       }
+      console.log('Elearning table exists but is empty');
+    } else {
+      console.log('Elearning table does not exist, showing setup UI');
     }
     
     // Table doesn't exist or is empty - show setup UI
-    await showSetupUI(!tables.includes('Elearning'));
+    showSetupUI(!tables.includes('Elearning'));
     return true;
     
   } catch (e) {
@@ -291,9 +295,14 @@ async function ensureElearningTableExists() {
   }
 }
 
-async function showSetupUI(needsTableCreation) {
+function showSetupUI(needsTableCreation) {
+  console.log('showSetupUI called, needsTableCreation:', needsTableCreation);
   const content = document.getElementById('lessonContent');
   content.style.display = 'block';
+  
+  // Also hide the welcome screen if visible
+  const welcomeScreen = document.getElementById('welcomeScreen');
+  if (welcomeScreen) welcomeScreen.style.display = 'none';
   
   if (needsTableCreation) {
     content.innerHTML = `
